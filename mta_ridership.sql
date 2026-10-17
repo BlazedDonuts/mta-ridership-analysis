@@ -9,7 +9,7 @@
 						1. Renames and converts raw input data into a clean table 
                         2. Runs quality checks (duplicates, missing values, NULLS, zeros)
                         3. Flags Staten Island Railway zero-ridership weekends (likely no service; see README)
-                        4. Builds holiday-lookup table
+                        4. Builds a holiday lookup table and labels each day as weekday, weekend, or holiday
                         5. Analyzes subway ridership by day of week, day-type, and month
                         
     Run order: top to bottom, after importing CSV (see Step 1)
@@ -231,6 +231,22 @@ INSERT INTO holidays (holiday_date, holiday_name) VALUES
 -- 2025 holidays (capped to 1 day in 2025)
 INSERT INTO holidays (holiday_date, holiday_name) VALUES
 	('2025-01-01','New Years');
+    
+-- Label each day as weekday, weekend, or holiday
+-- holiday is checked first, so holidays falling on weekends count as holidays
+ALTER TABLE ridership_clean
+  ADD COLUMN day_type VARCHAR(10);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE ridership_clean r
+LEFT JOIN holidays h
+  ON r.ride_date = h.holiday_date
+SET r.day_type = CASE
+    WHEN h.holiday_date IS NOT NULL THEN 'holiday'
+    WHEN DAYOFWEEK(r.ride_date) IN (1, 7) THEN 'weekend'
+    ELSE 'weekday'
+  END;
+SET SQL_SAFE_UPDATES = 1;
 
 -- Analysis part 1: which days are busiest
 -- Result: Wednesday busiest (~3.01M avg), Sunday lowest (~1.51M); Tue-Thu peak, Mon and Fri lower
@@ -255,17 +271,10 @@ LEFT JOIN holidays h
 ON r.ride_date = h.holiday_date
 WHERE h.holiday_name IS NOT NULL;
 
-SELECT
-  CASE
-    WHEN h.holiday_date IS NOT NULL THEN 'holiday'
-    WHEN DAYOFWEEK(r.ride_date) IN (1,7) THEN 'weekend'
-    ELSE 'weekday'
-  END AS day_type,
-  COUNT(*) AS days,
-  ROUND(AVG(r.subway_ridership)) AS avg_subway
-FROM ridership_clean r
-LEFT JOIN holidays h
-  ON r.ride_date = h.holiday_date
+SELECT day_type,
+       COUNT(*) AS days,
+       ROUND(AVG(subway_ridership)) AS avg_subway
+FROM ridership_clean
 GROUP BY day_type;
 
 
@@ -291,8 +300,6 @@ FROM ridership_clean
 GROUP BY month
 ORDER BY avg_subway DESC
 LIMIT 1;
-
-
 
 
 
