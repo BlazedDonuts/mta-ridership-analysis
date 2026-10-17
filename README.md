@@ -75,6 +75,8 @@ A `holidays` lookup table was created with 30 major holidays (New Year's Day, Me
 - `weekend` if Saturday or Sunday
 - `weekday` otherwise
 
+The label is saved as a `day_type` column in `ridership_clean` (with `ALTER TABLE` and an `UPDATE` joined to the holidays table), so the dashboard can use it directly.
+
 | Day type | Days | Avg. subway riders | vs. weekdays |
 |---|---|---|---|
 | Weekday | 1,245 | 2,903,976 | baseline |
@@ -118,7 +120,8 @@ A Power BI dashboard built from `ridership_clean.csv` summarizes the three main 
 |---|---|
 | `mta_ridership.sql` | Full SQL script: import notes, cleaning, quality checks, flagging, and analysis, with results commented under each query |
 | `data/MTA_Daily_Ridership_Data__2020_-_2025_20261009.csv` | Original MTA Daily Ridership Data, as downloaded from data.ny.gov |
-| `data/ridership_clean.csv` | Cleaned table exported from MySQL |
+| `data/ridership_clean.csv` | Cleaned table exported from MySQL, including the `sir_flag` and `day_type` columns |
+| `data/holidays.csv` | The 30 holidays used for the weekday/weekend/holiday comparison |
 | `dashboard/[DASHBOARD FILE NAME].pbix` | Power BI dashboard file |
 | `images/dashboard.png` | Dashboard screenshot shown above |
 | `README.md` | This file |
