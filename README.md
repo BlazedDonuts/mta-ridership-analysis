@@ -122,7 +122,7 @@ A Power BI dashboard built from `ridership_clean.csv` summarizes the three main 
 | `data/MTA_Daily_Ridership_Data__2020_-_2025_20261009.csv` | Original MTA Daily Ridership Data, as downloaded from data.ny.gov |
 | `data/ridership_clean.csv` | Cleaned table exported from MySQL, including the `sir_flag` and `day_type` columns |
 | `data/holidays.csv` | The 30 holidays used for the weekday/weekend/holiday comparison |
-| `dashboard/[DASHBOARD FILE NAME].pbix` | Power BI dashboard file |
+| `dashboard/mta_ridership_dashboard.pbix` | Power BI dashboard file |
 | `images/dashboard.png` | Dashboard screenshot shown above |
 | `README.md` | This file |
 
@@ -132,4 +132,4 @@ A Power BI dashboard built from `ridership_clean.csv` summarizes the three main 
 2. In MySQL Workbench, run the first two statements of `mta_ridership.sql` to create the database.
 3. Import `data/MTA_Daily_Ridership_Data__2020_-_2025_20261009.csv` with the Table Data Import Wizard as `ridership_raw`, with every column set to `TEXT`.
 4. Run the rest of the script from top to bottom.
-5. To view the dashboard, open `dashboard/[DASHBOARD FILE NAME].pbix` in Power BI Desktop.
+5. To view the dashboard, open `dashboard/mta_ridership_dashboard.pbix` in Power BI Desktop.
